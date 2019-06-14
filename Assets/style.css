@@ -1,0 +1,45 @@
+body {
+    position: relative;
+}
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+#title {
+    background-color: teal;
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-bottom: 30px;
+}
+#schedule {
+    border: solid teal;
+    text-align: center;
+    margin: auto;
+}
+input {
+    margin: 10px;
+    width: 95%;
+}
+h2 {
+    border-top: solid teal;
+    border-left: solid teal;
+    border-right: solid teal;
+    width: 1000px;
+    margin: auto;
+}
+#schedule td {
+    width: 200px;
+    border-left: solid teal;
+    border-right: solid teal;
+}
+form {
+    border: solid teal;
+    width: 800px;
+    margin: auto;
+    margin-top: 50px;
+}
+button {
+    margin: 10px;
+    background-color: teal;
+    color: white;
+}
