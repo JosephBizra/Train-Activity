@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">      
+        <style>
+            body {
+                position: relative;
+            }
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+            #title {
+                background-color: teal;
+                text-align: center;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding-bottom: 30px;
+            }
+            #schedule {
+                border: solid teal;
+                text-align: center;
+                margin: auto;
+            }
+            input {
+                margin: 10px;
+                width: 95%;
+            }
+            h2 {
+                border-top: solid teal;
+                border-left: solid teal;
+                border-right: solid teal;
+                width: 800px;
+                margin: auto;
+            }
+            #schedule td {
+                width: 200px;
+                border-left: solid teal;
+                border-right: solid teal;
+            }
+            form {
+                border: solid teal;
+                width: 800px;
+                margin: auto;
+                margin-top: 50px;
+            }
+            button {
+                margin: 10px;
+                background-color: teal;
+                color: white;
+            }
+        </style>
+        <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+
+    </head>
+    <body>
+        <h1 id="title">Train Times</h1>
+        <table id="schedule">
+            <h2>Train Data</h2>
+            <tr>
+                <td>Name</td>
+                <td>Destination</td>
+                <td>Next Arrival</td>
+                <td>Frequency</td>
+            </tr>
+        </table>
+        <form>
+            Train Name <br>
+            <input type="text" id="name"> <br>
+            Destination <br>
+            <input type="text" id="destination"> <br>
+            First arrival <br>
+            <input type="time" id="arrival"> <br>
+            Frequency <br>
+            <input type="number" id="frequency"> <br>
+            <button>submit</button>
+        </form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+        <script>
+            var firebaseConfig = {
+                apiKey: "AIzaSyAxN74Srxg5s0Cr0nKq7-t3k5QrkjMEM4E",
+                authDomain: "train-activity-1613f.firebaseapp.com",
+                databaseURL: "https://train-activity-1613f.firebaseio.com",
+                projectId: "train-activity-1613f",
+                storageBucket: "",
+                messagingSenderId: "718334187456",
+                appId: "1:718334187456:web:386ed529cfb32a2a"
+            };
+            firebase.initializeApp(firebaseConfig);
+            var database = firebase.database();
+
+            database.ref().on("child_added", function(snapshot){
+                $("#name").text(snapshot.val().name);
+                $("#destination").text(snapshot.val().destination);
+                $("#arrival").text(snapshot.val().nextArrival2);
+                $("#frequency").text(snapshot.val().frequency);
+
+
+            });
+
+
+
+
+
+            
+            $("button").on("click", function (params) {
+                params.preventDefault();
+                console.log("hi");
+
+                var name = $("#name").val();
+                var destination = $("#destination").val();
+                var firstArrival = moment($("#arrival").val(), "HH:mm");
+                var frequency = Number($("#frequency").val());
+
+                console.log(frequency);
+                var now = moment().format("hh:mm:ss");
+                console.log(firstArrival + moment());
+                var difference = firstArrival.diff(moment(), "minutes");
+                console.log(difference);
+                var remaining = difference % frequency;
+                console.log(remaining);
+                var nextArrival = now + remaining;
+                console.log(moment(nextArrival).format("HH:mm"));
+                // nextArrival2 = moment(nextArrival).format("minutes");
+                // console.log(nextArrival2);
+
+                database.ref().push({
+                    name: name,
+                    destination: destination,
+                    nextArrival: nextArrival,
+                    frequency: frequency
+                });
+                
+                //determine first train
+                //find how many minutes have passed between arrival and now
+                //use "%" to divide the minutes by frequency to get a remainder
+                //remainder will be # of mins remaining
+                //nexArrival will equal now + mins remaining
+
+                var tr = "<tr>"
+                    + "<td>" + name + "</td>"
+                    + "<td>" + destination + "</td>"
+                    + "<td>" + nextArrival + "</td>"
+                    + "<td>" + frequency + "</td>"
+                    + "</tr>"
+                $("#schedule").append(tr);
+                console.log(typeof frequency);
+                console.log(moment().add(frequency, 'minutes'));
+            })
+        </script>
+    </body>
+</html>
